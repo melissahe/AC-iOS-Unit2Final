@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		81C200A11FB5FA94001D0977 /* CrayonListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C200A01FB5FA94001D0977 /* CrayonListViewController.swift */; };
 		81C200A51FB5FCD0001D0977 /* CrayonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C200A41FB5FCD0001D0977 /* CrayonTableViewCell.swift */; };
+		81C200A71FB60824001D0977 /* CrayonDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C200A61FB60824001D0977 /* CrayonDetailTableViewController.swift */; };
 		C5E24D601FB2392D00578931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E24D5F1FB2392D00578931 /* AppDelegate.swift */; };
 		C5E24D651FB2392D00578931 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5E24D631FB2392D00578931 /* Main.storyboard */; };
 		C5E24D671FB2392D00578931 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5E24D661FB2392D00578931 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		81C200A01FB5FA94001D0977 /* CrayonListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayonListViewController.swift; sourceTree = "<group>"; };
 		81C200A41FB5FCD0001D0977 /* CrayonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayonTableViewCell.swift; sourceTree = "<group>"; };
+		81C200A61FB60824001D0977 /* CrayonDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayonDetailTableViewController.swift; sourceTree = "<group>"; };
 		C5E24D5C1FB2392D00578931 /* AC-iOS-Unit2Final.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AC-iOS-Unit2Final.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5E24D5F1FB2392D00578931 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C5E24D641FB2392D00578931 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -43,6 +45,7 @@
 			isa = PBXGroup;
 			children = (
 				81C200A01FB5FA94001D0977 /* CrayonListViewController.swift */,
+				81C200A61FB60824001D0977 /* CrayonDetailTableViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 			files = (
 				81C200A11FB5FA94001D0977 /* CrayonListViewController.swift in Sources */,
 				C5E24D601FB2392D00578931 /* AppDelegate.swift in Sources */,
+				81C200A71FB60824001D0977 /* CrayonDetailTableViewController.swift in Sources */,
 				C5E24D721FB2395900578931 /* Crayon.swift in Sources */,
 				81C200A51FB5FCD0001D0977 /* CrayonTableViewCell.swift in Sources */,
 			);

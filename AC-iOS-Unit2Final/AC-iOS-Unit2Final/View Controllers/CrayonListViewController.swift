@@ -33,7 +33,13 @@ class CrayonListViewController: UIViewController {
     }
 
     //MARK: - Navigation
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let currentCell = sender as? CrayonTableViewCell, let destinationVC = segue.destination as? CrayonDetailTableViewController {
+            let currentCrayon = allCrayons[crayonListTableView.indexPath(for: currentCell)!.row]
+            
+            destinationVC.defaultColor = currentCrayon
+        }
+    }
 }
 
 //MARK: - Table View Methods
