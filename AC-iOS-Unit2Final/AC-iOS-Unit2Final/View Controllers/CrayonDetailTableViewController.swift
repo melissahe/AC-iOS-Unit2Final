@@ -13,116 +13,149 @@ class CrayonDetailTableViewController: UITableViewController {
     @IBOutlet weak var colorNameLabel: UILabel!
     
     var defaultColor: Crayon!
-    var userSelectedColor: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) = (red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: 1) {
+    
+    var selectedColor: (forRed: CGFloat, forGreen: CGFloat, forBlue: CGFloat, forAlpha: CGFloat) = (forRed: CGFloat(1), forGreen: CGFloat(1), forBlue: CGFloat(1), forAlpha: 1) {
         didSet {
-            self.tableView.reloadData()
+            self.tableView.backgroundColor = UIColor(displayP3Red: selectedColor.forRed, green: selectedColor.forGreen, blue: selectedColor.forBlue, alpha: selectedColor.forAlpha)
+            
+            switch DisplayColorCode.selectedColorCode {
+            case .hex:
+                break
+            case .decimal:
+                redValueLabel.text = selectedColor.forRed.description
+                greenValueLabel.text = selectedColor.forGreen.description
+                blueValueLabel.text = selectedColor.forBlue.description
+                
+                alphaValueLabel.text = selectedColor.forAlpha.description
+            }
+            
+            self.tableView.reloadSections(IndexSet(integersIn: 0..<7), with: UITableViewRowAnimation(rawValue: 5)!)
         }
     }
     
     //Color Code
     @IBOutlet weak var colorCodeSegmentedControl: UISegmentedControl!
     
-//    var currentColorCode =
+    var currentColorCode = DisplayColorCode.selectedColorCode {
+        didSet {
+            DisplayColorCode.selectedColorCode = currentColorCode
+        }
+    }
     
     @IBAction func colorCodeValueChanged(_ sender: UISegmentedControl) {
-        //changesColorCode
+        guard let selectedColorCode = DisplayColorCode.ColorCode(rawValue: sender.selectedSegmentIndex) else {
+            return
+        }
+        
+        currentColorCode = selectedColorCode
     }
     
     //Red Value
     @IBOutlet weak var redValueLabel: UILabel!
     @IBOutlet weak var redSlider: UISlider!
-    
-//    var currentRedColor =
-    
     @IBAction func redSliderValueChanged(_ sender: UISlider) {
+        selectedColor.forRed = CGFloat(sender.value)
     }
     
     //Green Value
     @IBOutlet weak var greenValueLabel: UILabel!
     @IBOutlet weak var greenSlider: UISlider!
-    
-    //    var currentGreenColor =
-    
     @IBAction func greenSliderValueChanged(_ sender: UISlider) {
+        selectedColor.forGreen = CGFloat(sender.value)
     }
     
     //Blue Value
     @IBOutlet weak var blueValueLabel: UILabel!
     @IBOutlet weak var blueSlider: UISlider!
-    
-    //    var currentBlueColor =
-    
     @IBAction func blueSliderValueChanged(_ sender: UISlider) {
+        selectedColor.forBlue = CGFloat(sender.value)
     }
     
     //Alpha Value
     @IBOutlet weak var alphaValueLabel: UILabel!
-    @IBOutlet weak var alphaSlider: UISlider!
-    
-    //    var currentAlphaColor =
-    
-    @IBAction func alphaSliderValueChanged(_ sender: UISlider) {
+    @IBOutlet weak var alphaStepper: UIStepper!
+    @IBAction func alphaSliderValueChanged(_ sender: UIStepper) {
+        selectedColor.forAlpha = CGFloat(sender.value / 10)
     }
     
     //Reset
     @IBAction func resetButtonPressed(_ sender: UIButton) {
-        loadColor()
+        loadColors()
+        self.tableView.reloadData()
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadColors()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        loadColor()
-    }
-    
-    func loadColor() {
-        userSelectedColor.red = CGFloat(defaultColor.red / 255)
-        userSelectedColor.green = CGFloat(defaultColor.green / 255)
-        userSelectedColor.blue = CGFloat(defaultColor.blue / 255)
-        userSelectedColor.alpha = 1
-        
+    func loadColors() {
         colorNameLabel.text = defaultColor.name
-        self.tableView.backgroundColor = UIColor(displayP3Red: userSelectedColor.red, green: userSelectedColor.green, blue: userSelectedColor.blue, alpha: 1)
+        
+        selectedColor.forRed = CGFloat(defaultColor.red / 255)
+        selectedColor.forGreen = CGFloat(defaultColor.green / 255)
+        selectedColor.forBlue = CGFloat(defaultColor.blue / 255)
+        selectedColor.forAlpha = 1
+        
+        self.tableView.backgroundColor = UIColor(displayP3Red: selectedColor.forRed, green: selectedColor.forGreen, blue: selectedColor.forBlue, alpha: selectedColor.forAlpha)
+        
+        //color code
+        colorCodeSegmentedControl.selectedSegmentIndex = currentColorCode.rawValue
         
         //red
-        redValueLabel.text = userSelectedColor.red.description
-        redSlider.value = Float(userSelectedColor.red)
-        
+        redValueLabel.text = selectedColor.forRed.description
+        redSlider.value = Float(selectedColor.forRed)
         
         //green
-        greenValueLabel.text = userSelectedColor.green.description
-        greenSlider.value = Float(userSelectedColor.green)
+        greenValueLabel.text = selectedColor.forGreen.description
+        greenSlider.value = Float(selectedColor.forGreen)
         
         //blue
-        blueValueLabel.text = userSelectedColor.blue.description
-        blueSlider.value = Float(userSelectedColor.blue)
+        blueValueLabel.text = selectedColor.forBlue.description
+        blueSlider.value = Float(selectedColor.forBlue)
         
         //alpha
-        alphaValueLabel.text = String(1)
-        alphaSlider.value = 1
+        alphaValueLabel.text = selectedColor.forAlpha.description
+        alphaStepper.value = Double(selectedColor.forAlpha * 10)
     }
-
+    
 }
 
-//Changing table view section text
+//Changing table view section text colors
 extension CrayonDetailTableViewController {
+    //header
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let headerView = view as? UITableViewHeaderFooterView, let headerViewText = headerView.textLabel else {
             return
         }
         
-        let oppositeRed = (1 - userSelectedColor.red) / 1.35
-        let oppositeGreen = (1 - userSelectedColor.green) / 1.35
-        let oppositeBlue = (1 - userSelectedColor.blue) / 1.35
+        let oppositeRed = (1 - selectedColor.forRed) / 1.35
+        let oppositeGreen = (1 - selectedColor.forGreen) / 1.35
+        let oppositeBlue = (1 - selectedColor.forBlue) / 1.35
         
-        headerViewText.textColor = UIColor(displayP3Red: oppositeBlue, green: oppositeGreen, blue: oppositeRed, alpha: 1)
+        headerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
     }
     
-//    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        <#code#>
-//    }
+    //footer
+    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        guard let footerView = view as? UITableViewHeaderFooterView, let footerViewText = footerView.textLabel else {
+            return
+        }
+        
+        let oppositeRed = (1 - selectedColor.forRed) / 1.35
+        let oppositeGreen = (1 - selectedColor.forGreen) / 1.35
+        let oppositeBlue = (1 - selectedColor.forBlue) / 1.35
+        
+        footerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
+    }
+}
+
+struct DisplayColorCode {
+    enum ColorCode: Int {
+        case hex = 0
+        case decimal = 1
+    }
+    
+    static var selectedColorCode: ColorCode = .decimal
 }
