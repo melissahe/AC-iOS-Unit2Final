@@ -135,7 +135,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zzt-Kp-4ex">
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="zzt-Kp-4ex">
                                                     <rect key="frame" x="8" y="8" width="359" height="29"/>
                                                     <segments>
                                                         <segment title="Hex"/>
@@ -344,7 +344,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qJw-Sp-uhH">
-                                                    <rect key="frame" x="168" y="8" width="39" height="28.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
                                                     <state key="normal" title="Reset"/>
                                                     <connections>
                                                         <action selector="resetButtonPressed:" destination="Wpq-Nw-slQ" eventType="touchUpInside" id="Hta-8D-HUe"/>
@@ -352,9 +352,10 @@
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="qJw-Sp-uhH" firstAttribute="centerX" secondItem="3Fo-ZE-xRC" secondAttribute="centerX" id="0V3-jr-Yq6"/>
-                                                <constraint firstItem="qJw-Sp-uhH" firstAttribute="top" secondItem="3Fo-ZE-xRC" secondAttribute="top" constant="8" id="ZNg-l4-57A"/>
-                                                <constraint firstAttribute="bottom" secondItem="qJw-Sp-uhH" secondAttribute="bottom" constant="8" id="h9J-TP-1eO"/>
+                                                <constraint firstItem="qJw-Sp-uhH" firstAttribute="leading" secondItem="3Fo-ZE-xRC" secondAttribute="leading" id="BRM-Np-geu"/>
+                                                <constraint firstAttribute="trailing" secondItem="qJw-Sp-uhH" secondAttribute="trailing" id="XvM-n5-hUp"/>
+                                                <constraint firstAttribute="bottom" secondItem="qJw-Sp-uhH" secondAttribute="bottom" id="tHA-Z2-HBA"/>
+                                                <constraint firstItem="qJw-Sp-uhH" firstAttribute="top" secondItem="3Fo-ZE-xRC" secondAttribute="top" id="yKR-ZM-VQ9"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>

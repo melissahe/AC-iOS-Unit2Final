@@ -8,26 +8,25 @@
 
 import UIKit
 
+//Changing hex to decimal, vice versa - too small to be its own file
+struct DisplayColorCode {
+    enum ColorCode: Int {
+        case hex = 0
+        case decimal = 1
+    }
+    
+    static var selectedColorCode: ColorCode = .decimal
+}
+
 class CrayonDetailTableViewController: UITableViewController {
     
     @IBOutlet weak var colorNameLabel: UILabel!
     
     var defaultColor: Crayon!
     
-    var selectedColor: (forRed: CGFloat, forGreen: CGFloat, forBlue: CGFloat, forAlpha: CGFloat) = (forRed: CGFloat(1), forGreen: CGFloat(1), forBlue: CGFloat(1), forAlpha: 1) {
+    var selectedColor: (forRed: Int, forGreen: Int, forBlue: Int, forAlpha: CGFloat) = (forRed: 255, forGreen: 255, forBlue: 255, forAlpha: 1) {
         didSet {
-            self.tableView.backgroundColor = UIColor(displayP3Red: selectedColor.forRed, green: selectedColor.forGreen, blue: selectedColor.forBlue, alpha: selectedColor.forAlpha)
-            
-            switch DisplayColorCode.selectedColorCode {
-            case .hex:
-                break
-            case .decimal:
-                redValueLabel.text = selectedColor.forRed.description
-                greenValueLabel.text = selectedColor.forGreen.description
-                blueValueLabel.text = selectedColor.forBlue.description
-                
-                alphaValueLabel.text = selectedColor.forAlpha.description
-            }
+            displayColors()
             
             self.tableView.reloadSections(IndexSet(integersIn: 0..<7), with: UITableViewRowAnimation(rawValue: 5)!)
         }
@@ -39,6 +38,8 @@ class CrayonDetailTableViewController: UITableViewController {
     var currentColorCode = DisplayColorCode.selectedColorCode {
         didSet {
             DisplayColorCode.selectedColorCode = currentColorCode
+            displayColors()
+            tableView.reloadData()
         }
     }
     
@@ -46,7 +47,6 @@ class CrayonDetailTableViewController: UITableViewController {
         guard let selectedColorCode = DisplayColorCode.ColorCode(rawValue: sender.selectedSegmentIndex) else {
             return
         }
-        
         currentColorCode = selectedColorCode
     }
     
@@ -54,21 +54,21 @@ class CrayonDetailTableViewController: UITableViewController {
     @IBOutlet weak var redValueLabel: UILabel!
     @IBOutlet weak var redSlider: UISlider!
     @IBAction func redSliderValueChanged(_ sender: UISlider) {
-        selectedColor.forRed = CGFloat(sender.value)
+        selectedColor.forRed = Int(CGFloat(sender.value) * 255)
     }
     
     //Green Value
     @IBOutlet weak var greenValueLabel: UILabel!
     @IBOutlet weak var greenSlider: UISlider!
     @IBAction func greenSliderValueChanged(_ sender: UISlider) {
-        selectedColor.forGreen = CGFloat(sender.value)
+        selectedColor.forGreen = Int(CGFloat(sender.value) * 255)
     }
     
     //Blue Value
     @IBOutlet weak var blueValueLabel: UILabel!
     @IBOutlet weak var blueSlider: UISlider!
     @IBAction func blueSliderValueChanged(_ sender: UISlider) {
-        selectedColor.forBlue = CGFloat(sender.value)
+        selectedColor.forBlue = Int(CGFloat(sender.value) * 255)
     }
     
     //Alpha Value
@@ -81,6 +81,7 @@ class CrayonDetailTableViewController: UITableViewController {
     //Reset
     @IBAction func resetButtonPressed(_ sender: UIButton) {
         loadColors()
+        displayColors()
         self.tableView.reloadData()
     }
     
@@ -88,38 +89,77 @@ class CrayonDetailTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadColors()
+        displayColors()
     }
     
     func loadColors() {
         colorNameLabel.text = defaultColor.name
         
-        selectedColor.forRed = CGFloat(defaultColor.red / 255)
-        selectedColor.forGreen = CGFloat(defaultColor.green / 255)
-        selectedColor.forBlue = CGFloat(defaultColor.blue / 255)
+        selectedColor.forRed = Int(defaultColor.red)
+        selectedColor.forGreen = Int(defaultColor.green)
+        selectedColor.forBlue = Int(defaultColor.blue)
         selectedColor.forAlpha = 1
-        
-        self.tableView.backgroundColor = UIColor(displayP3Red: selectedColor.forRed, green: selectedColor.forGreen, blue: selectedColor.forBlue, alpha: selectedColor.forAlpha)
+    }
+    
+    func displayColors() {
+        self.tableView.backgroundColor = UIColor(displayP3Red: CGFloat(Double(selectedColor.forRed) / 255), green: CGFloat(Double(selectedColor.forGreen) / 255), blue: CGFloat(Double(selectedColor.forBlue) / 255), alpha: selectedColor.forAlpha)
         
         //color code
         colorCodeSegmentedControl.selectedSegmentIndex = currentColorCode.rawValue
         
         //red
-        redValueLabel.text = selectedColor.forRed.description
-        redSlider.value = Float(selectedColor.forRed)
+        redValueLabel.text = (currentColorCode == .decimal) ? (selectedColor.forRed.description) : ("#" + convertDecimalToHex(selectedColor.forRed))
+        redSlider.value = Float(selectedColor.forRed) / 255
         
         //green
-        greenValueLabel.text = selectedColor.forGreen.description
-        greenSlider.value = Float(selectedColor.forGreen)
+        greenValueLabel.text = (currentColorCode == .decimal) ? (selectedColor.forGreen.description) : ("#" + convertDecimalToHex(selectedColor.forGreen))
+        greenSlider.value = Float(selectedColor.forGreen) / 255
         
         //blue
-        blueValueLabel.text = selectedColor.forBlue.description
-        blueSlider.value = Float(selectedColor.forBlue)
+        blueValueLabel.text = (currentColorCode == .decimal) ? (selectedColor.forBlue.description) : ("#" + convertDecimalToHex(selectedColor.forBlue))
+        blueSlider.value = Float(selectedColor.forBlue) / 255
         
         //alpha
         alphaValueLabel.text = selectedColor.forAlpha.description
         alphaStepper.value = Double(selectedColor.forAlpha * 10)
     }
     
+    func convertDecimalToHex(_ decimal: Int) -> String {
+        var decimal = decimal
+        var convertedHex: String = ""
+        
+        var firstDigit: String = ""
+        var lastDigit: String = ""
+        
+        let hexadecimalDictionary: [Int: String] = [10 : "A",
+                                                    11 : "B",
+                                                    12 : "C",
+                                                    13 : "D",
+                                                    14 : "E",
+                                                    15 : "F"]
+        
+        for number in 0..<2 {
+            let remainder = decimal % 16
+            decimal /= 16
+            if remainder < 10 {
+                if number == 0 {
+                    lastDigit = remainder.description
+                } else {
+                    firstDigit = remainder.description
+                }
+            } else if let hexadecimal = hexadecimalDictionary[remainder] {
+                if number == 0 {
+                    lastDigit = hexadecimal
+                } else {
+                    firstDigit = hexadecimal
+                }
+            }
+        }
+        
+        convertedHex = firstDigit + lastDigit
+        
+        return convertedHex
+    }
 }
 
 //Changing table view section text colors
@@ -130,9 +170,9 @@ extension CrayonDetailTableViewController {
             return
         }
         
-        let oppositeRed = (1 - selectedColor.forRed) / 1.35
-        let oppositeGreen = (1 - selectedColor.forGreen) / 1.35
-        let oppositeBlue = (1 - selectedColor.forBlue) / 1.35
+        let oppositeRed = CGFloat(255 - selectedColor.forRed) / 344
+        let oppositeGreen = CGFloat(255 - selectedColor.forGreen) / 344
+        let oppositeBlue = CGFloat(255 - selectedColor.forBlue) / 344
         
         headerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
     }
@@ -143,19 +183,10 @@ extension CrayonDetailTableViewController {
             return
         }
         
-        let oppositeRed = (1 - selectedColor.forRed) / 1.35
-        let oppositeGreen = (1 - selectedColor.forGreen) / 1.35
-        let oppositeBlue = (1 - selectedColor.forBlue) / 1.35
+        let oppositeRed = CGFloat(255 - selectedColor.forRed) / 344
+        let oppositeGreen = CGFloat(255 - selectedColor.forGreen) / 344
+        let oppositeBlue = CGFloat(255 - selectedColor.forBlue) / 344
         
         footerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
     }
-}
-
-struct DisplayColorCode {
-    enum ColorCode: Int {
-        case hex = 0
-        case decimal = 1
-    }
-    
-    static var selectedColorCode: ColorCode = .decimal
 }
