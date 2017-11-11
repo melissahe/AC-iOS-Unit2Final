@@ -70,7 +70,7 @@ class CrayonDetailTableViewController: UITableViewController {
                     return
                 }
                 
-                let decimalHex = Crayon(hex: redText)
+                let decimalHex = Crayon(hex: redText.uppercased())
         
                 selectedColor.forRed = Int(decimalHex.red)
             }
@@ -100,7 +100,7 @@ class CrayonDetailTableViewController: UITableViewController {
                     return
                 }
                 
-                let decimalHex = Crayon(hex: greenText)
+                let decimalHex = Crayon(hex: greenText.uppercased())
                 
                 selectedColor.forGreen = Int(decimalHex.green)
             }
@@ -129,7 +129,7 @@ class CrayonDetailTableViewController: UITableViewController {
                     return
                 }
                 
-                let decimalHex = Crayon(hex: blueText)
+                let decimalHex = Crayon(hex: blueText.uppercased())
                 
                 selectedColor.forBlue = Int(decimalHex.blue)
             }
