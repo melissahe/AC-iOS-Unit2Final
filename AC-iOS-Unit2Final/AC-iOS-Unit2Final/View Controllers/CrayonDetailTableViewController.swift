@@ -34,7 +34,7 @@ class CrayonDetailTableViewController: UITableViewController {
         }
     }
     
-    //Color Code
+    //Color Code - Decimal or Hex
     @IBOutlet weak var colorCodeSegmentedControl: UISegmentedControl!
     
     var currentColorCode = DisplayColorCode.selectedColorCode {
@@ -52,92 +52,50 @@ class CrayonDetailTableViewController: UITableViewController {
         currentColorCode = selectedColorCode
     }
     
-    //Red Value
+    //RGB Labels
+        //red
     @IBOutlet weak var redValueTextField: UITextField!
     var redText: String = "" {
         didSet {
             redValueTextField.text = redText
-            
-            switch currentColorCode {
-            case .decimal:
-                guard let numRedText = Int(redText), numRedText <= 255 else {
-                    return
-                }
-                
-                selectedColor.forRed = numRedText
-            case .hex:
-                guard redText.count <= 2 else {
-                    return
-                }
-                
-                let decimalHex = Crayon(hex: redText.uppercased())
-        
-                selectedColor.forRed = Int(decimalHex.red)
-            }
+            changeColor(using: redText)
         }
     }
-    @IBOutlet weak var redSlider: UISlider!
-    
-    @IBAction func redSliderValueChanged(_ sender: UISlider) {
-        selectedColor.forRed = Int(CGFloat(sender.value) * 255)
-    }
-    
-    //Green Value
+
+        //green
     @IBOutlet weak var greenValueTextField: UITextField!
     var greenText: String = "" {
         didSet {
             greenValueTextField.text = greenText
-            
-            switch currentColorCode {
-            case .decimal:
-                guard let numGreenText = Int(greenText), numGreenText <= 255 else {
-                    return
-                }
-                
-                selectedColor.forGreen = numGreenText
-            case .hex:
-                guard greenText.count <= 2 else {
-                    return
-                }
-                
-                let decimalHex = Crayon(hex: greenText.uppercased())
-                
-                selectedColor.forGreen = Int(decimalHex.green)
-            }
+            changeColor(using: greenText)
         }
     }
-    @IBOutlet weak var greenSlider: UISlider!
-    @IBAction func greenSliderValueChanged(_ sender: UISlider) {
-        selectedColor.forGreen = Int(CGFloat(sender.value) * 255)
-    }
     
-    //Blue Value
+        //blue
     @IBOutlet weak var blueValueTextField: UITextField!
     var blueText: String = "" {
         didSet {
             blueValueTextField.text = blueText
-            
-            switch currentColorCode {
-            case .decimal:
-                guard let numBlueText = Int(blueText), numBlueText <= 255 else {
-                    return
-                }
-                
-                selectedColor.forBlue = numBlueText
-            case .hex:
-                guard blueText.count <= 2 else {
-                    return
-                }
-                
-                let decimalHex = Crayon(hex: blueText.uppercased())
-                
-                selectedColor.forBlue = Int(decimalHex.blue)
-            }
+            changeColor(using: blueText)
         }
     }
+    
+    //RGB Slider Values
+    @IBOutlet weak var redSlider: UISlider!
+    @IBOutlet weak var greenSlider: UISlider!
     @IBOutlet weak var blueSlider: UISlider!
-    @IBAction func blueSliderValueChanged(_ sender: UISlider) {
-        selectedColor.forBlue = Int(CGFloat(sender.value) * 255)
+
+    @IBAction func colorSliderValueChanged(_ sender: UISlider) {
+        switch sender {
+        case redSlider:
+            selectedColor.forRed = Int(CGFloat(sender.value) * 255)
+        case greenSlider:
+            selectedColor.forGreen = Int(CGFloat(sender.value) * 255)
+        case blueSlider:
+            selectedColor.forBlue = Int(CGFloat(sender.value) * 255)
+        default:
+            return
+        }
     }
     
     //Alpha Value
@@ -147,7 +105,7 @@ class CrayonDetailTableViewController: UITableViewController {
         selectedColor.forAlpha = CGFloat(sender.value / 10)
     }
     
-    //Reset
+    //Reset Color
     @IBAction func resetButtonPressed(_ sender: UIButton) {
         loadColors()
         displayColors()
@@ -174,36 +132,36 @@ class CrayonDetailTableViewController: UITableViewController {
     }
     
     func displayColors() {
-        self.tableView.backgroundColor = UIColor(displayP3Red: CGFloat(Double(selectedColor.forRed) / 255), green: CGFloat(Double(selectedColor.forGreen) / 255), blue: CGFloat(Double(selectedColor.forBlue) / 255), alpha: selectedColor.forAlpha)
+        //background
+        let cgFloatRed = CGFloat(Double(selectedColor.forRed) / 255)
+        let cgFloatGreen = CGFloat(Double(selectedColor.forGreen) / 255)
+        let cgFloatBlue = CGFloat(Double(selectedColor.forBlue) / 255)
         
-        //color code
+        self.tableView.backgroundColor = UIColor(displayP3Red: cgFloatRed, green: cgFloatGreen, blue: cgFloatBlue, alpha: selectedColor.forAlpha)
+        
+        //color values - decimal or hex
         colorCodeSegmentedControl.selectedSegmentIndex = currentColorCode.rawValue
         
-        if manuallyChangingColor {
-            //red
-            redValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forRed.description) : redValueTextField.text
-            redSlider.value = Float(selectedColor.forRed) / 255
-            
-            //green
-            greenValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forGreen.description) : greenValueTextField.text
-            greenSlider.value = Float(selectedColor.forGreen) / 255
-            
-            //blue
-            blueValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forBlue.description) : blueValueTextField.text
-            blueSlider.value = Float(selectedColor.forBlue) / 255
-        } else {
-        //red
-        redValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forRed.description) : (convertDecimalToHex(selectedColor.forRed))
-        redSlider.value = Float(selectedColor.forRed) / 255
-        
-        //green
-        greenValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forGreen.description) : (convertDecimalToHex(selectedColor.forGreen))
-        greenSlider.value = Float(selectedColor.forGreen) / 255
-        
-        //blue
-        blueValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forBlue.description) : (convertDecimalToHex(selectedColor.forBlue))
-        blueSlider.value = Float(selectedColor.forBlue) / 255
+        //rgb textfields
+        switch currentColorCode {
+        case .decimal:
+            redValueTextField.text = selectedColor.forRed.description
+            greenValueTextField.text = selectedColor.forGreen.description
+            blueValueTextField.text = selectedColor.forBlue.description
+        case .hex:
+            if manuallyChangingColor {
+                break
+            } else {
+                redValueTextField.text = convertDecimalToHex(selectedColor.forRed)
+                greenValueTextField.text = convertDecimalToHex(selectedColor.forGreen)
+                blueValueTextField.text = convertDecimalToHex(selectedColor.forBlue)
+            }
         }
+        
+        //rgb sliders
+        redSlider.value = Float(selectedColor.forRed) / 255
+        greenSlider.value = Float(selectedColor.forGreen) / 255
+        blueSlider.value = Float(selectedColor.forBlue) / 255
         
         //alpha
         alphaValueLabel.text = selectedColor.forAlpha.description
@@ -224,17 +182,18 @@ class CrayonDetailTableViewController: UITableViewController {
                                                     14 : "E",
                                                     15 : "F"]
         
-        for number in 0..<2 {
+        //decimal-to-hex conversion
+        for loopNumber in 0..<2 {
             let remainder = decimal % 16
             decimal /= 16
             if remainder < 10 {
-                if number == 0 {
+                if loopNumber == 0 {
                     lastDigit = remainder.description
                 } else {
                     firstDigit = remainder.description
                 }
             } else if let hexadecimal = hexadecimalDictionary[remainder] {
-                if number == 0 {
+                if loopNumber == 0 {
                     lastDigit = hexadecimal
                 } else {
                     firstDigit = hexadecimal
@@ -246,27 +205,63 @@ class CrayonDetailTableViewController: UITableViewController {
         
         return convertedHex
     }
+    
+    func changeColor(using colorText: String) {
+        switch currentColorCode {
+        case .decimal:
+            guard let numColorText = Int(colorText), numColorText <= 255 else {
+                return
+            }
+            
+            if colorText == redText {
+                selectedColor.forRed = numColorText
+            } else if colorText == greenText {
+                selectedColor.forGreen = numColorText
+            } else if colorText == blueText {
+                selectedColor.forBlue = numColorText
+            }
+        case .hex:
+            guard colorText.count <= 2 else {
+                return
+            }
+            
+            let decimalHex = Crayon(hex: colorText.uppercased())
+            
+            if colorText == redText {
+                selectedColor.forRed = Int(decimalHex.red)
+            } else if colorText == greenText {
+                selectedColor.forGreen = Int(decimalHex.green)
+            } else if colorText == blueText {
+                selectedColor.forBlue = Int(decimalHex.blue)
+            }
+        }
+    }
 }
 
 //MARK: - Text Field Delegate Methods
 extension CrayonDetailTableViewController: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         manuallyChangingColor = true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
+        guard string.count <= 1 else {
+            return false
+        }
+        
+        //if deleting
         if string == "" {
+            var changedText = Array(textField.text!).map{String($0)}
+            changedText.remove(at: range.lowerBound)
+            
             if textField == redValueTextField {
-                var newText = textField.text!
-                newText.removeLast()
-                redText = newText
+                redText = changedText.joined()
             } else if textField == greenValueTextField {
-                var newText = textField.text!
-                newText.removeLast()
-                greenText = newText
+                greenText = changedText.joined()
             } else if textField == blueValueTextField {
-                var newText = textField.text!
-                newText.removeLast()
-                blueText = newText
+                blueText = changedText.joined()
             }
             return false
         }
@@ -279,18 +274,19 @@ extension CrayonDetailTableViewController: UITextFieldDelegate {
             return false
         }
         
+        //if typing
+        let addTextTo = {(colorText: String) -> String in
+            var colorTextArray = Array(colorText).map{String($0)}
+            colorTextArray.insert(string, at: range.lowerBound)
+            return colorTextArray.joined()
+        }
+        
         if textField == redValueTextField {
-            var redTextArray = Array(redText).map{String($0)}
-            redTextArray.insert(string, at: range.lowerBound)
-            redText = redTextArray.joined()
+            redText = addTextTo(redText)
         } else if textField == greenValueTextField {
-            var greenTextArray = Array(greenText).map{String($0)}
-            greenTextArray.insert(string, at: range.lowerBound)
-            greenText = greenTextArray.joined()
+            greenText = addTextTo(greenText)
         } else if textField == blueValueTextField {
-            var blueTextArray = Array(blueText).map{String($0)}
-            blueTextArray.insert(string, at: range.lowerBound)
-            blueText = blueTextArray.joined()
+            blueText = addTextTo(blueText)
         }
         
         return false
@@ -306,20 +302,16 @@ extension CrayonDetailTableViewController: UITextFieldDelegate {
 extension CrayonDetailTableViewController {
     //header
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        guard let headerView = view as? UITableViewHeaderFooterView, let headerViewText = headerView.textLabel else {
-            return
-        }
-        
-        let oppositeRed = CGFloat(255 - selectedColor.forRed) / 344
-        let oppositeGreen = CGFloat(255 - selectedColor.forGreen) / 344
-        let oppositeBlue = CGFloat(255 - selectedColor.forBlue) / 344
-        
-        headerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
+        changeTextColor(for: view)
     }
     
     //footer
     override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        guard let footerView = view as? UITableViewHeaderFooterView, let footerViewText = footerView.textLabel else {
+        changeTextColor(for: view)
+    }
+    
+    func changeTextColor(for view: UIView) {
+        guard let headerFooterView = view as? UITableViewHeaderFooterView, let headerFooterText = headerFooterView.textLabel else {
             return
         }
         
@@ -327,7 +319,7 @@ extension CrayonDetailTableViewController {
         let oppositeGreen = CGFloat(255 - selectedColor.forGreen) / 344
         let oppositeBlue = CGFloat(255 - selectedColor.forBlue) / 344
         
-        footerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
+        headerFooterText.backgroundColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
     }
 }
 
