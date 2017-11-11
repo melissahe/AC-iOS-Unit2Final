@@ -319,7 +319,7 @@ extension CrayonDetailTableViewController {
         let oppositeGreen = CGFloat(255 - selectedColor.forGreen) / 344
         let oppositeBlue = CGFloat(255 - selectedColor.forBlue) / 344
         
-        headerFooterText.backgroundColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
+        headerFooterText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
     }
 }
 
