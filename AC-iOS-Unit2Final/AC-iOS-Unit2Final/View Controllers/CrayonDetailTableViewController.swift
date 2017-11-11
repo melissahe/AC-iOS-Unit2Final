@@ -24,6 +24,8 @@ class CrayonDetailTableViewController: UITableViewController {
     
     var defaultColor: Crayon!
     
+    var manuallyChangingColor: Bool = false
+    
     var selectedColor: (forRed: Int, forGreen: Int, forBlue: Int, forAlpha: CGFloat) = (forRed: 255, forGreen: 255, forBlue: 255, forAlpha: 1) {
         didSet {
             displayColors()
@@ -51,21 +53,88 @@ class CrayonDetailTableViewController: UITableViewController {
     }
     
     //Red Value
-    @IBOutlet weak var redValueLabel: UILabel!
+    @IBOutlet weak var redValueTextField: UITextField!
+    var redText: String = "" {
+        didSet {
+            redValueTextField.text = redText
+            
+            switch currentColorCode {
+            case .decimal:
+                guard let numRedText = Int(redText), numRedText <= 255 else {
+                    return
+                }
+                
+                selectedColor.forRed = numRedText
+            case .hex:
+                guard redText.count <= 2 else {
+                    return
+                }
+                
+                let decimalHex = Crayon(hex: redText)
+        
+                selectedColor.forRed = Int(decimalHex.red)
+            }
+        }
+    }
     @IBOutlet weak var redSlider: UISlider!
+    
     @IBAction func redSliderValueChanged(_ sender: UISlider) {
         selectedColor.forRed = Int(CGFloat(sender.value) * 255)
     }
     
     //Green Value
-    @IBOutlet weak var greenValueLabel: UILabel!
+    @IBOutlet weak var greenValueTextField: UITextField!
+    var greenText: String = "" {
+        didSet {
+            greenValueTextField.text = greenText
+            
+            switch currentColorCode {
+            case .decimal:
+                guard let numGreenText = Int(greenText), numGreenText <= 255 else {
+                    return
+                }
+                
+                selectedColor.forGreen = numGreenText
+            case .hex:
+                guard greenText.count <= 2 else {
+                    return
+                }
+                
+                let decimalHex = Crayon(hex: greenText)
+                
+                selectedColor.forGreen = Int(decimalHex.green)
+            }
+        }
+    }
     @IBOutlet weak var greenSlider: UISlider!
     @IBAction func greenSliderValueChanged(_ sender: UISlider) {
         selectedColor.forGreen = Int(CGFloat(sender.value) * 255)
     }
     
     //Blue Value
-    @IBOutlet weak var blueValueLabel: UILabel!
+    @IBOutlet weak var blueValueTextField: UITextField!
+    var blueText: String = "" {
+        didSet {
+            blueValueTextField.text = blueText
+            
+            switch currentColorCode {
+            case .decimal:
+                guard let numBlueText = Int(blueText), numBlueText <= 255 else {
+                    return
+                }
+                
+                selectedColor.forBlue = numBlueText
+            case .hex:
+                guard blueText.count <= 2 else {
+                    return
+                }
+                
+                let decimalHex = Crayon(hex: blueText)
+                
+                selectedColor.forBlue = Int(decimalHex.blue)
+            }
+        }
+    }
     @IBOutlet weak var blueSlider: UISlider!
     @IBAction func blueSliderValueChanged(_ sender: UISlider) {
         selectedColor.forBlue = Int(CGFloat(sender.value) * 255)
@@ -85,11 +154,13 @@ class CrayonDetailTableViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadColors()
         displayColors()
+        redValueTextField.delegate = self
+        greenValueTextField.delegate = self
+        blueValueTextField.delegate = self
     }
     
     func loadColors() {
@@ -99,6 +170,7 @@ class CrayonDetailTableViewController: UITableViewController {
         selectedColor.forGreen = Int(defaultColor.green)
         selectedColor.forBlue = Int(defaultColor.blue)
         selectedColor.forAlpha = 1
+        
     }
     
     func displayColors() {
@@ -107,17 +179,31 @@ class CrayonDetailTableViewController: UITableViewController {
         //color code
         colorCodeSegmentedControl.selectedSegmentIndex = currentColorCode.rawValue
         
+        if manuallyChangingColor {
+            //red
+            redValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forRed.description) : redValueTextField.text
+            redSlider.value = Float(selectedColor.forRed) / 255
+            
+            //green
+            greenValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forGreen.description) : greenValueTextField.text
+            greenSlider.value = Float(selectedColor.forGreen) / 255
+            
+            //blue
+            blueValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forBlue.description) : blueValueTextField.text
+            blueSlider.value = Float(selectedColor.forBlue) / 255
+        } else {
         //red
-        redValueLabel.text = (currentColorCode == .decimal) ? (selectedColor.forRed.description) : ("#" + convertDecimalToHex(selectedColor.forRed))
+        redValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forRed.description) : (convertDecimalToHex(selectedColor.forRed))
         redSlider.value = Float(selectedColor.forRed) / 255
         
         //green
-        greenValueLabel.text = (currentColorCode == .decimal) ? (selectedColor.forGreen.description) : ("#" + convertDecimalToHex(selectedColor.forGreen))
+        greenValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forGreen.description) : (convertDecimalToHex(selectedColor.forGreen))
         greenSlider.value = Float(selectedColor.forGreen) / 255
         
         //blue
-        blueValueLabel.text = (currentColorCode == .decimal) ? (selectedColor.forBlue.description) : ("#" + convertDecimalToHex(selectedColor.forBlue))
+        blueValueTextField.text = (currentColorCode == .decimal) ? (selectedColor.forBlue.description) : (convertDecimalToHex(selectedColor.forBlue))
         blueSlider.value = Float(selectedColor.forBlue) / 255
+        }
         
         //alpha
         alphaValueLabel.text = selectedColor.forAlpha.description
@@ -162,6 +248,60 @@ class CrayonDetailTableViewController: UITableViewController {
     }
 }
 
+//MARK: - Text Field Delegate Methods
+extension CrayonDetailTableViewController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        manuallyChangingColor = true
+        
+        if string == "" {
+            if textField == redValueTextField {
+                var newText = textField.text!
+                newText.removeLast()
+                redText = newText
+            } else if textField == greenValueTextField {
+                var newText = textField.text!
+                newText.removeLast()
+                greenText = newText
+            } else if textField == blueValueTextField {
+                var newText = textField.text!
+                newText.removeLast()
+                blueText = newText
+            }
+            return false
+        }
+        
+        guard "0123456789abcdef".contains(string.lowercased()) else {
+            return false
+        }
+        
+        guard let text = textField.text, text.count < 3 else {
+            return false
+        }
+        
+        if textField == redValueTextField {
+            var redTextArray = Array(redText).map{String($0)}
+            redTextArray.insert(string, at: range.lowerBound)
+            redText = redTextArray.joined()
+        } else if textField == greenValueTextField {
+            var greenTextArray = Array(greenText).map{String($0)}
+            greenTextArray.insert(string, at: range.lowerBound)
+            greenText = greenTextArray.joined()
+        } else if textField == blueValueTextField {
+            var blueTextArray = Array(blueText).map{String($0)}
+            blueTextArray.insert(string, at: range.lowerBound)
+            blueText = blueTextArray.joined()
+        }
+        
+        return false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        manuallyChangingColor = false
+    }
+    
+}
+
 //Changing table view section text colors
 extension CrayonDetailTableViewController {
     //header
@@ -190,3 +330,4 @@ extension CrayonDetailTableViewController {
         footerViewText.textColor = UIColor(displayP3Red: oppositeGreen, green: oppositeBlue, blue: oppositeRed, alpha: 1)
     }
 }
+

@@ -21,6 +21,68 @@ class Crayon {
         self.blue = blue
         self.hex = hex
     }
+    
+    convenience init(hex: String) {
+        let convertHexToDecimal = {(hex: String) -> Double in
+            var hexArray = Array(hex)
+            var decimal: Double = 0
+            
+            let decimalDictionary: [String : Double] = ["A" : 10,
+                                                     "B" : 11,
+                                                     "C" : 12,
+                                                     "D" : 13,
+                                                     "E" : 14,
+                                                     "F" : 15]
+            
+            //for zero characters
+            if hexArray.count == 0 {
+                return decimal
+            }
+            
+            //for single characters
+            if hexArray.count == 1 {
+                let hex = String(hexArray[0])
+                
+                if let numHex = Double(hex) {
+                    decimal = numHex
+                } else if let safeDecimalValue = decimalDictionary[hex] {
+                    decimal = safeDecimalValue
+                }
+                
+                return decimal
+            }
+            
+            //for two characters
+            let firstLetter = String(hexArray[0])
+            let secondLetter = String(hexArray[1])
+            
+            if let numFirstLetter = Double(firstLetter) {
+                decimal += numFirstLetter * 16
+            } else if let decimalFirstLetter = decimalDictionary[firstLetter] {
+                decimal += decimalFirstLetter * 16
+            }
+            
+            if let numSecondLetter = Double(secondLetter) {
+                decimal += numSecondLetter
+            } else if let decimalSecondLetter = decimalDictionary[secondLetter] {
+                decimal += decimalSecondLetter
+            }
+            
+            return decimal
+        }
+
+        //red
+        let redDecimal: Double = convertHexToDecimal(hex)
+        
+        //green
+        let greenDecimal: Double = convertHexToDecimal(hex)
+        
+        //blue
+        let blueDecimal: Double = convertHexToDecimal(hex)
+        
+        self.init(name: "Custom Color", red: redDecimal, green: greenDecimal, blue: blueDecimal, hex: hex)
+    }
+    
     static let allTheCrayons = [
         Crayon(name: "Almond", red: 239, green: 222, blue: 205, hex: "#EFDECD"),
         Crayon(name: "Antique Brass", red: 205, green: 149, blue: 117, hex: "#CD9575"),
