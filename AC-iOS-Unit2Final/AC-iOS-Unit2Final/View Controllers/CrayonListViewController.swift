@@ -21,6 +21,12 @@ class CrayonListViewController: UIViewController {
         loadData()
         self.view.addSubview(crayonListTableView)
         setUpConstraints()
+ 
+        crayonListTableView.estimatedRowHeight = 140
+        crayonListTableView.rowHeight = UITableViewAutomaticDimension
+        
+        crayonListTableView.register(CrayonTableViewCell.self, forCellReuseIdentifier: "crayonCell")
+        
         crayonListTableView.delegate = self
         crayonListTableView.dataSource = self
     }
@@ -43,14 +49,6 @@ class CrayonListViewController: UIViewController {
         crayonListTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
     }
     
-    //MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let currentCell = sender as? CrayonTableViewCell, let destinationVC = segue.destination as? CrayonDetailTableViewController {
-            let currentCrayon = allCrayons[crayonListTableView.indexPath(for: currentCell)!.row]
-            
-            destinationVC.defaultColor = currentCrayon
-        }
-    }
 }
 
 //MARK: - Table View Methods
@@ -58,9 +56,11 @@ extension CrayonListViewController: UITableViewDelegate, UITableViewDataSource {
     
     //Delegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedCell = tableView.cellForRow(at: indexPath)
         
-        performSegue(withIdentifier: "detailedSegue", sender: selectedCell)
+        let detailedVC = CrayonDetailTableViewController()
+        detailedVC.defaultColor = allCrayons[indexPath.row]
+        
+        self.navigationController?.pushViewController(detailedVC, animated: true)
     }
     
     //Data Source Methods
@@ -81,18 +81,18 @@ extension CrayonListViewController: UITableViewDelegate, UITableViewDataSource {
         
         if let crayonCell = cell as? CrayonTableViewCell {
             
-            crayonCell.colorNameLabel.text = currentCrayon.name
-            crayonCell.colorNameLabel.textColor = UIColor(displayP3Red: oppositeBlue, green: oppositeGreen, blue: oppositeRed, alpha: 1)
-            crayonCell.crayonImageView.image = #imageLiteral(resourceName: "transparentCrayon")
-            crayonCell.backgroundColor = UIColor(displayP3Red: currentRed, green: currentGreen, blue: currentBlue, alpha: 1)
+            let colorName = currentCrayon.name
+            let textColor = UIColor(displayP3Red: oppositeBlue, green: oppositeGreen, blue: oppositeRed, alpha: 1)
+
+            let backgroundColor = UIColor(displayP3Red: currentRed, green: currentGreen, blue: currentBlue, alpha: 1)
             
             //if hex
-            crayonCell.decimalHexLabel.text = "Hex: \(currentCrayon.hex)"
+            let decimalHexText = "Hex: \(currentCrayon.hex)"
             
             //if decimal
 //            crayonCell.decimalHexLabel.text = "Decimal: (\(currentCrayon.red), \(currentCrayon.green), \(currentCrayon.blue))"
             
-            crayonCell.decimalHexLabel.textColor = UIColor(displayP3Red: oppositeBlue, green: oppositeGreen, blue: oppositeRed, alpha: 1)
+            crayonCell.configureCell(withColorName: colorName, textColor: textColor, backgroundColor: backgroundColor, andDecimalHexText: decimalHexText)
             
             return crayonCell
         }

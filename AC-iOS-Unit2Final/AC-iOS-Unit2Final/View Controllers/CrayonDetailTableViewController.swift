@@ -114,11 +114,12 @@ class CrayonDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadColors()
-        displayColors()
-        redValueTextField.delegate = self
-        greenValueTextField.delegate = self
-        blueValueTextField.delegate = self
+        print("detailed view loaded")
+//        loadColors()
+//        displayColors()
+//        redValueTextField.delegate = self
+//        greenValueTextField.delegate = self
+//        blueValueTextField.delegate = self
     }
     
     func loadColors() {
