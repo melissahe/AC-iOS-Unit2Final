@@ -29,21 +29,20 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="colorNameLabel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iaU-Z5-6dE">
-                                                    <rect key="frame" x="8" y="8.0000000000000018" width="134.66666666666666" height="20.666666666666671"/>
+                                                    <rect key="frame" x="8" y="8.0000000000000018" width="398" height="20.666666666666671"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="decimalHexLabel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HqW-4G-Zfr">
-                                                    <rect key="frame" x="8" y="97.666666666666686" width="134.66666666666666" height="28.333333333333329"/>
+                                                    <rect key="frame" x="8" y="97.666666666666686" width="398" height="28.333333333333329"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="eBZ-bw-9XR">
-                                                    <rect key="frame" x="40" y="38.666666666666671" width="295" height="49.000000000000014"/>
+                                                    <rect key="frame" x="40" y="38.666666666666671" width="334" height="49.000000000000014"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="295" id="ZVT-t5-0HX"/>
                                                         <constraint firstAttribute="height" relation="lessThanOrEqual" constant="49" id="oYG-Hv-Lzj"/>
                                                     </constraints>
                                                 </imageView>
@@ -61,11 +60,6 @@
                                                 <constraint firstItem="HqW-4G-Zfr" firstAttribute="leading" secondItem="J6M-Hf-5QG" secondAttribute="leading" constant="8" id="vTJ-vu-t2F"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="colorNameLabel" destination="iaU-Z5-6dE" id="PwI-ov-FQH"/>
-                                            <outlet property="crayonImageView" destination="eBZ-bw-9XR" id="geA-Z1-3BT"/>
-                                            <outlet property="decimalHexLabel" destination="HqW-4G-Zfr" id="6ca-Dj-dcZ"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -83,13 +77,12 @@
                         <barButtonItem key="backBarButtonItem" title="Crayons" id="peY-ft-Iby"/>
                     </navigationItem>
                     <connections>
-                        <outlet property="crayonListTableView" destination="tap-W0-z5w" id="xdP-ae-2Kf"/>
                         <segue destination="Wpq-Nw-slQ" kind="show" identifier="detailedSegue" id="4I3-tR-Un1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4uI-ef-X5b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="252" y="175.86206896551727"/>
+            <point key="canvasLocation" x="250.72463768115944" y="175.27173913043481"/>
         </scene>
         <!--Crayon Detail Table View Controller-->
         <scene sceneID="PJE-rF-Ab6">

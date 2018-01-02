@@ -77,6 +77,7 @@
 		C5E24D5E1FB2392D00578931 /* AC-iOS-Unit2Final */ = {
 			isa = PBXGroup;
 			children = (
+				C5E24D5F1FB2392D00578931 /* AppDelegate.swift */,
 				C5E24D741FB23F8500578931 /* Models */,
 				81C200A31FB5FCB4001D0977 /* Views */,
 				81C200A21FB5FA98001D0977 /* View Controllers */,
@@ -90,7 +91,6 @@
 		C5E24D731FB23F6D00578931 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				C5E24D5F1FB2392D00578931 /* AppDelegate.swift */,
 				C5E24D661FB2392D00578931 /* Assets.xcassets */,
 				C5E24D681FB2392D00578931 /* LaunchScreen.storyboard */,
 			);

@@ -10,14 +10,17 @@ import UIKit
 
 class CrayonListViewController: UIViewController {
 
-    @IBOutlet weak var crayonListTableView: UITableView!
+    var crayonListTableView: UITableView = UITableView()
     
     //Data Source Variable
     var allCrayons: [Crayon] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "Crayons"
         loadData()
+        self.view.addSubview(crayonListTableView)
+        setUpConstraints()
         crayonListTableView.delegate = self
         crayonListTableView.dataSource = self
     }
@@ -32,6 +35,14 @@ class CrayonListViewController: UIViewController {
         allCrayons = Crayon.allTheCrayons
     }
 
+    //Constraints
+    func setUpConstraints() {
+       crayonListTableView.translatesAutoresizingMaskIntoConstraints = false
+        crayonListTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        crayonListTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        crayonListTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+    }
+    
     //MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let currentCell = sender as? CrayonTableViewCell, let destinationVC = segue.destination as? CrayonDetailTableViewController {
